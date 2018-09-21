@@ -40,7 +40,7 @@ public String lexeme;
 {reservedword} {lexeme = yytext(); return RESERVEDWORDS}
 {emptySpace} {/*Ignore*/}
 "//".* {/*Ignore*/}
-"/*".*"*/" {/*Ignore*/}
+"/*"(.|\n)*"*/" {/*Ignore*/}
 "(*".*"*)" {/*Ignore*/}
 "{".*"}" {/*Ignore*/}
 {equalop} {lexeme = yytext(); return EQUALSOP;}
