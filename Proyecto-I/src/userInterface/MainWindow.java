@@ -201,10 +201,7 @@ public class MainWindow extends JFrame {
 	
 	public void save()
 	{
-		for (int i = 0; i < tokenStorage.getTokenList().size(); i++)
-		{
-			System.out.println(tokenStorage.getTokenList().get(i).getToken() + "   " + tokenStorage.getTokenList().get(i).getLexer());
-		}
+		mainControl.fillHashMap(tokenStorage.getTokenList());
 		/*DefaultTableModel model = (DefaultTableModel) table.getModel();
 		JFileChooser fileChooser = new JFileChooser();
 		int result = fileChooser.showSaveDialog(null);
