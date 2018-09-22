@@ -10,6 +10,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Reader;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -24,7 +25,11 @@ import javax.swing.JFileChooser;
 import javax.swing.JTable;
 import javax.swing.JScrollPane;
 import javax.swing.table.DefaultTableModel;
+
+import domain.Generator;
 import domain.Lexer;
+import domain.MainControl;
+import domain.TokenStorage;
 import enumeration.Token;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -33,6 +38,8 @@ public class MainWindow extends JFrame {
 	private JPanel contentPane;
 	private JTable table;
 	private JTextArea textArea;
+	private MainControl mainControl;
+	private TokenStorage tokenStorage;
 
 	/**
 	 * Launch the application.
@@ -54,6 +61,8 @@ public class MainWindow extends JFrame {
 	 * Create the frame.
 	 */
 	public MainWindow() {
+		mainControl = MainControl.getInstance();
+		tokenStorage = TokenStorage.getInstance();
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 500, 575);
 		contentPane = new JPanel();
@@ -75,6 +84,7 @@ public class MainWindow extends JFrame {
 		JButton btnAnalizar = new JButton("Analizar");
 		btnAnalizar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				ArrayList<Object[]> tokenList = new ArrayList<Object[]>();
 				try {
 					cleanTable();
 					//lexerFile();
@@ -104,12 +114,18 @@ public class MainWindow extends JFrame {
 						{
 							case ERROR:
 								model.addRow(new Object[]{token, ""});
+								Generator generatorError = new Generator(token, "");
+								mainControl.newToken(generatorError);
 								break;
 							case ID: case INTEGERLIT: case FLOATLIT:
 								model.addRow(new Object[]{token, lexer.lexeme});
+								Generator generatorNum = new Generator(token, lexer.lexeme);
+								mainControl.newToken(generatorNum);
 								break;
 							default:
 								model.addRow(new Object[]{token, lexer.lexeme});
+								Generator generatorDef = new Generator(token, lexer.lexeme);
+								mainControl.newToken(generatorDef);
 						}
 					}
 				} catch (IOException e) {
@@ -177,8 +193,6 @@ public class MainWindow extends JFrame {
 				case ID: case INTEGERLIT: case FLOATLIT:
 					model.addRow(new Object[]{token, lexer.lexeme});
 					break;
-				case ASSIGNOP:
-					model.addRow(new Object[]{token, lexer.lexeme});
 				default:
 					model.addRow(new Object[]{token, lexer.lexeme});
 			}
@@ -187,7 +201,11 @@ public class MainWindow extends JFrame {
 	
 	public void save()
 	{
-		DefaultTableModel model = (DefaultTableModel) table.getModel();
+		for (int i = 0; i < tokenStorage.getTokenList().size(); i++)
+		{
+			System.out.println(tokenStorage.getTokenList().get(i).getToken() + "   " + tokenStorage.getTokenList().get(i).getLexer());
+		}
+		/*DefaultTableModel model = (DefaultTableModel) table.getModel();
 		JFileChooser fileChooser = new JFileChooser();
 		int result = fileChooser.showSaveDialog(null);
 		String route = "";
@@ -217,7 +235,7 @@ public class MainWindow extends JFrame {
 			{
 				JOptionPane.showConfirmDialog(null, "Error al guardar el archivo" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 			}
-		}
+		}*/
 	}
 	
 	public void cleanTable()
