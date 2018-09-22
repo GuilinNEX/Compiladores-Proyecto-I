@@ -64,7 +64,7 @@ public String lexeme;
 {colon} {lexeme = yytext(); return COLON;}
 {point} {lexeme = yytext(); return POINT;}
 \'.*\' | \"[^*] ~\" | \#.* {lexeme = yytext(); return STRINGLIT;}
-{letter} ({letter} | {digit})* {lexeme = yytext(); return ID;}
+{letter} ({letter} | {digit})* {1,127} {lexeme = yytext(); return ID;}
 [-]?{digit}+ {lexeme = yytext(); return INTEGERLIT;}
 [-]?{float}+ {lexeme = yytext(); return FLOATLIT;}
 . {return ERROR;} 

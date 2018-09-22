@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -27,6 +28,7 @@ import javax.swing.JScrollPane;
 import javax.swing.table.DefaultTableModel;
 
 import domain.Generator;
+import domain.HashStorage;
 import domain.Lexer;
 import domain.MainControl;
 import domain.TokenStorage;
@@ -40,6 +42,7 @@ public class MainWindow extends JFrame {
 	private JTextArea textArea;
 	private MainControl mainControl;
 	private TokenStorage tokenStorage;
+	private HashStorage hashStorage;
 
 	/**
 	 * Launch the application.
@@ -63,6 +66,7 @@ public class MainWindow extends JFrame {
 	public MainWindow() {
 		mainControl = MainControl.getInstance();
 		tokenStorage = TokenStorage.getInstance();
+		hashStorage = HashStorage.getInstance();
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 500, 575);
 		contentPane = new JPanel();
@@ -202,7 +206,9 @@ public class MainWindow extends JFrame {
 	public void save()
 	{
 		mainControl.fillHashMap(tokenStorage.getTokenList());
-		/*DefaultTableModel model = (DefaultTableModel) table.getModel();
+		System.out.println(hashStorage.getHashMap());
+		
+		DefaultTableModel model = (DefaultTableModel) table.getModel();
 		JFileChooser fileChooser = new JFileChooser();
 		int result = fileChooser.showSaveDialog(null);
 		String route = "";
@@ -232,7 +238,7 @@ public class MainWindow extends JFrame {
 			{
 				JOptionPane.showConfirmDialog(null, "Error al guardar el archivo" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 			}
-		}*/
+		}
 	}
 	
 	public void cleanTable()
