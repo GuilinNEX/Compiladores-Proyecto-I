@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -40,9 +41,9 @@ public class MainWindow extends JFrame {
 	private JPanel contentPane;
 	private JTable table;
 	private JTextArea textArea;
-	private MainControl mainControl;
-	private TokenStorage tokenStorage;
-	private HashStorage hashStorage;
+	private MainControl mainControl; //Constructor of the main controller
+	private TokenStorage tokenStorage; //Constructor for the arrayList
+	private HashStorage hashStorage; //Constructor for the hashmap
 
 	/**
 	 * Launch the application.
@@ -64,9 +65,9 @@ public class MainWindow extends JFrame {
 	 * Create the frame.
 	 */
 	public MainWindow() {
-		mainControl = MainControl.getInstance();
-		tokenStorage = TokenStorage.getInstance();
-		hashStorage = HashStorage.getInstance();
+		mainControl = MainControl.getInstance(); //Initialize the instance of the main controller
+		tokenStorage = TokenStorage.getInstance();  //Initialize the instance of the token Array list
+		hashStorage = HashStorage.getInstance(); //Initialize the instance of the hash storage
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 500, 575);
 		contentPane = new JPanel();
@@ -88,10 +89,8 @@ public class MainWindow extends JFrame {
 		JButton btnAnalizar = new JButton("Analizar");
 		btnAnalizar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				ArrayList<Object[]> tokenList = new ArrayList<Object[]>();
 				try {
-					cleanTable();
-					//lexerFile();
+					cleanTable(); //Clean the table to reset the content
 					DefaultTableModel model = (DefaultTableModel) table.getModel();
 					File file = new File ("file.txt");
 					PrintWriter writer;
@@ -107,7 +106,7 @@ public class MainWindow extends JFrame {
 					}
 					Reader reader = new BufferedReader(new FileReader("file.txt"));
 					Lexer lexer = new Lexer(reader);
-					while (true)
+					while (true) //analyze every token from the text area
 					{
 						Token token = lexer.yylex();
 						if (token == null) 
@@ -116,17 +115,17 @@ public class MainWindow extends JFrame {
 						}
 						switch(token)
 						{
-							case ERROR:
+							case ERROR: //Detect the error
 								model.addRow(new Object[]{token, ""});
 								Generator generatorError = new Generator(token, "");
 								mainControl.newToken(generatorError);
 								break;
-							case ID: case INTEGERLIT: case FLOATLIT:
+							case ID: case INTEGERLIT: case FLOATLIT: //Detect a identificator, int or float nummber
 								model.addRow(new Object[]{token, lexer.lexeme});
 								Generator generatorNum = new Generator(token, lexer.lexeme);
 								mainControl.newToken(generatorNum);
 								break;
-							default:
+							default: //In case of every other token
 								model.addRow(new Object[]{token, lexer.lexeme});
 								Generator generatorDef = new Generator(token, lexer.lexeme);
 								mainControl.newToken(generatorDef);
@@ -165,48 +164,17 @@ public class MainWindow extends JFrame {
 		contentPane.add(btnGuardar);
 	}
 	
-	public void lexerFile() throws IOException
-	{
-		DefaultTableModel model = (DefaultTableModel) table.getModel();
-		File file = new File ("file.txt");
-		PrintWriter writer;
-		try
-		{
-			writer = new PrintWriter(file);
-			writer.print(textArea.getText());
-			writer.close();
-		}
-		catch (FileNotFoundException e)
-		{
-			Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, e);
-		}
-		Reader reader = new BufferedReader(new FileReader("file.txt"));
-		Lexer lexer = new Lexer(reader);
-		while (true)
-		{
-			Token token = lexer.yylex();
-			if (token == null) 
-			{
-				return;
-			}
-			switch(token)
-			{
-				case ERROR:
-					model.addRow(new Object[]{token, lexer.lexeme});
-					break;
-				case ID: case INTEGERLIT: case FLOATLIT:
-					model.addRow(new Object[]{token, lexer.lexeme});
-					break;
-				default:
-					model.addRow(new Object[]{token, lexer.lexeme});
-			}
-		}
-	}
-	
+	/*
+	 * Author: Esteban Coto Alfaro
+	 * Creation Date: 16/09/2018
+	 * Last Modification: 17/09/2018
+	 * Description: Function that Save the result of the analyze of code
+	 */
 	public void save()
 	{
-		mainControl.fillHashMap(tokenStorage.getTokenList());
-		System.out.println(hashStorage.getHashMap());
+		mainControl.fillHashMap(tokenStorage.getTokenList()); //fill the hash map
+		System.out.println(hashStorage.getHashMap()); //Show by console the hash map
+		
 		
 		DefaultTableModel model = (DefaultTableModel) table.getModel();
 		JFileChooser fileChooser = new JFileChooser();
@@ -241,6 +209,12 @@ public class MainWindow extends JFrame {
 		}
 	}
 	
+	/*
+	 * Author: Esteban Coto Alfaro
+	 * Creation Date: 16/09/2018
+	 * Last Modification: 17/09/2018
+	 * Description: Clean the table
+	 */
 	public void cleanTable()
 	{
 		DefaultTableModel model = (DefaultTableModel) table.getModel();

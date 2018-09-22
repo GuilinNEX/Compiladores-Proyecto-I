@@ -1,5 +1,11 @@
 package enumeration;
 
+/*
+ * Author: Esteban Coto Alfaro
+ * Creation Date: 16/09/2018
+ * Last Modification: 17/09/2018
+ * Description: Enum that define every type of token
+ */
 public enum Token 
 {
 	EQUALSOP, PLUSONEOP, LESSONEOP, GREATEROREQUALOP, LESSOREQUALOP, GREATEROP, LESSOP, DISTINCTOP, ASSIGNOP,

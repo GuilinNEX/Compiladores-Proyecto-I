@@ -4,9 +4,9 @@ import java.util.ArrayList;
 
 public class MainControl 
 {
-	private ControlGenerator controlGenerator;
-	private ControlHashMap controlHashMap;
-	private static MainControl instance;
+	private ControlGenerator controlGenerator; //Constructor of the Token generator
+	private ControlHashMap controlHashMap; //Constructor of the hashMap
+	private static MainControl instance; //Instance for the present class
 	
 	private MainControl()
 	{
@@ -22,13 +22,25 @@ public class MainControl
 		return instance;
 	}
 	
+	/*
+	 * Author: Esteban Coto Alfaro
+	 * Creation Date: 22/09/2018
+	 * Last Modification: 22/09/2018
+	 * Description: Function to add a new generator token to the array List
+	 */
 	public void newToken(Generator pGenerator)
 	{
-		controlGenerator.newToken(pGenerator);
+		controlGenerator.newToken(pGenerator); //Send the information to the controlGenerator
 	}
 	
+	/*
+	 * Author: Esteban Coto Alfaro
+	 * Creation Date: 22/09/2018
+	 * Last Modification: 22/09/2018
+	 * Description: Function to fill the hashmap
+	 */
 	public void fillHashMap(ArrayList<Generator> pArrayList)
 	{
-		controlHashMap.fillHashMap(pArrayList);
+		controlHashMap.fillHashMap(pArrayList); //Send the information to the controlHashMap
 	}
 }
