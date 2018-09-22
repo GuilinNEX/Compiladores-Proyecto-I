@@ -3,6 +3,8 @@ import ProyectoI.Token.*;
 %%
 %class Lexer
 %type Token
+multiLineComment = "/*" [^*] ~"*/" | "/*" "*" + "/"
+oneLineComment = "//" .* | "(*" .* "*)" | "{" .* "}"
 reservedword = "AND"|"ARRAY"|"BEGIN"|"BOOLEAN"|"BYTE"|"CASE"|"CHAR"|"CONST"|"DIV"|"DO"|"DOWNTO"|"ELSE"|"END"|"FALSE"|"FILE"|
 "FOR"|"FORWARD"|"FUNCTION"|"GOTO"|"IF"|"IN"|"INLINE"|"INT" |"LABEL"|"LONGINT"|"MOD"|"NIL"|"NOT"|"OF"|"OR"|"PACKED"|
 "PROCEDURE"|"PROGRAM"|"READ"|"REAL"|"RECORD"|"REPEAT"|"SET"|"SHORTINT"|"STRING"|"THEN"|"TO"|"TRUE"|"TYPE"
@@ -39,10 +41,7 @@ public String lexeme;
 %%
 {reservedword} {lexeme = yytext(); return RESERVEDWORDS}
 {emptySpace} {/*Ignore*/}
-"//".* {/*Ignore*/}
-"/*"(.|\n)*"*/" {/*Ignore*/}
-"(*".*"*)" {/*Ignore*/}
-"{".*"}" {/*Ignore*/}
+({multiLineComment} | {oneLineComment}) {/*Ignore*/}
 {equalop} {lexeme = yytext(); return EQUALSOP;}
 {plusoneop} {lexeme = yytext(); return PLUSONEOP;}
 {lessoneop} {lexeme = yytext(); return LESSONEOP;}
@@ -64,7 +63,7 @@ public String lexeme;
 {semicolon} {lexeme = yytext(); return SEMICOLON;}
 {colon} {lexeme = yytext(); return COLON;}
 {point} {lexeme = yytext(); return POINT;}
-\'.*\' | \"(.|\n)*\" | \#.* {lexeme = yytext(); return STRINGLIT;}
+\'.*\' | \"[^*] ~\" | \#.* {lexeme = yytext(); return STRINGLIT;}
 {letter} ({letter} | {digit})* {lexeme = yytext(); return ID;}
 [-]?{digit}+ {lexeme = yytext(); return INTEGERLIT;}
 [-]?{float}+ {lexeme = yytext(); return FLOATLIT;}
